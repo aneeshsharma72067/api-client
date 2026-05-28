@@ -1,73 +1,79 @@
-# Welcome to your Lovable project
+# API Client
 
-## Project info
+A lightweight API client and request workspace built with React, TypeScript, Vite, Tailwind CSS and shadcn-ui. Use it to build, send, and compare HTTP requests locally, import collections (cURL/OpenAPI/Postman), and manage multiple request workspaces.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- Build HTTP requests with URL, method, headers, query params and body
+- Import requests from cURL, OpenAPI, Postman, and HAR
+- View and compare responses with a built-in response viewer
+- Workspace support for organizing collections and environments
+- Small, fast dev environment powered by Vite
 
-There are several ways of editing your application.
+## Tech stack
 
-**Use Lovable**
+- Vite
+- React + TypeScript
+- Tailwind CSS
+- shadcn-ui (Radix + Tailwind components)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Requirements
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js 18+ (or the version compatible with the project's devDependencies)
+- npm (or any Node package manager)
 
-**Use your preferred IDE**
+## Quick start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
+cd api-client
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Available npm scripts (from package.json):
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `dev` — start the Vite dev server
+- `build` — build production assets
+- `build:dev` — build in development mode
+- `preview` — preview the production build locally
+- `lint` — run ESLint
 
-**Use GitHub Codespaces**
+## Development notes
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- The UI components live under `src/components`.
+- Importers for cURL/OpenAPI/Postman/HAR are in `src/lib/imports`.
+- HTTP runtime and client helpers are in `src/lib/http`.
+- Pages are in `src/pages` and the main app entry is `src/main.tsx`.
 
-## What technologies are used for this project?
+If you add environment-specific configuration, document it here and create an `.env.example` with the required variables.
 
-This project is built with:
+## Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Contributions are welcome. Please open issues for bugs or feature requests and submit pull requests with a clear description of changes.
 
-## How can I deploy this project?
+Suggested workflow:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```bash
+git checkout -b feat/your-feature
+# implement
+git commit -m "feat: describe"
+git push origin feat/your-feature
+```
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
+This repository does not include a license file. Add one if you intend to make the project public. Common choices: MIT, Apache-2.0.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+If you'd like, I can also:
+
+- add an `.env.example` if the app needs config
+- create a CONTRIBUTING.md template
+- run the dev server to verify everything starts up
