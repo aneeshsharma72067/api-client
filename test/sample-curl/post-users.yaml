@@ -1,0 +1,11 @@
+name: POST /users
+method: GET
+url: https://jsonplaceholder.typicode.com/todos/1
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  token: ""
+body:
+  type: json
+  raw: '{"name":"Ada Lovelace","email":"ada@example.com"}'

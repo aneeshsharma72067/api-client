@@ -5,6 +5,7 @@ import { KeyValueEditor } from './KeyValueEditor';
 import { AuthEditor } from './AuthEditor';
 import { BodyEditor } from './BodyEditor';
 import { ScriptEditor } from './ScriptEditor';
+import { RetryEditor } from './RetryEditor';
 
 interface RequestBuilderProps {
   request: ApiRequest;
@@ -47,6 +48,12 @@ export function RequestBuilder({ request, isLoading, onUpdate, onSend }: Request
           <TabsTrigger value="tests" className="data-[state=active]:bg-muted rounded-b-none">
             Tests
           </TabsTrigger>
+          <TabsTrigger value="retry" className="data-[state=active]:bg-muted rounded-b-none">
+            Retry
+            {request.retry?.enabled && (
+              <span className="ml-1.5 text-xs bg-primary/20 text-primary px-1.5 rounded">on</span>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <div className="flex-1 overflow-auto scrollbar-thin">
@@ -85,6 +92,12 @@ export function RequestBuilder({ request, isLoading, onUpdate, onSend }: Request
               script={request.testScript || ''}
               onChange={(testScript) => onUpdate({ ...request, testScript })}
               type="test"
+            />
+          </TabsContent>
+          <TabsContent value="retry" className="m-0">
+            <RetryEditor
+              value={request.retry}
+              onChange={(retry) => onUpdate({ ...request, retry })}
             />
           </TabsContent>
         </div>

@@ -1,7 +1,12 @@
 import { ApiRequest, Collection, Environment, HistoryItem, Folder } from '@/types/api';
 
 const DB_NAME = 'api-client-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
+
+export interface WorkspaceMetaEntry {
+  key: string;
+  value: unknown;
+}
 
 interface DBSchema {
   requests: ApiRequest;
@@ -9,6 +14,7 @@ interface DBSchema {
   folders: Folder;
   environments: Environment;
   history: HistoryItem;
+  'workspace-meta': WorkspaceMetaEntry;
 }
 
 type StoreName = keyof DBSchema;
@@ -45,6 +51,9 @@ export async function initDB(): Promise<IDBDatabase> {
       if (!database.objectStoreNames.contains('history')) {
         const historyStore = database.createObjectStore('history', { keyPath: 'id' });
         historyStore.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+      if (!database.objectStoreNames.contains('workspace-meta')) {
+        database.createObjectStore('workspace-meta', { keyPath: 'key' });
       }
     };
   });

@@ -1,0 +1,8 @@
+name: GET /users
+method: GET
+url: https://api.github.com/users/aneeshsharma72067
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  token: test-token

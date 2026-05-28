@@ -1,0 +1,4 @@
+- Write clean code
+- Keep functions reusable
+- Break huge functions to smaller parts
+- Keep the UI clean and consistent

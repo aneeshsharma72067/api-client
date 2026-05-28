@@ -1,0 +1,8 @@
+curl -X GET https://api.example.com/users \
+  -H 'Authorization: Bearer test-token' \
+  -H 'Accept: application/json'
+
+curl -X POST https://api.example.com/users \
+  -H 'Authorization: Bearer test-token' \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"Ada Lovelace","email":"ada@example.com"}'

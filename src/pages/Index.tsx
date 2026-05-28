@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ApiClientProvider, useApiClientContext } from '@/contexts/ApiClientContext';
+import { WorkspaceProvider } from '@/contexts/WorkspaceContext';
+import { WorkspacePicker } from '@/components/workspace/WorkspacePicker';
+import { WorkspaceBanner } from '@/components/workspace/WorkspaceBanner';
 import { Sidebar } from '@/components/api/Sidebar';
 import { RequestBuilder } from '@/components/api/RequestBuilder';
 import { ResponseViewer } from '@/components/api/ResponseViewer';
@@ -7,6 +10,9 @@ import { MethodBadge } from '@/components/api/MethodBadge';
 import { KeyValueEditor } from '@/components/api/KeyValueEditor';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import ImportModal from '@/components/import/ImportModal';
+import { CompareDialog } from '@/components/response/CompareDialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -34,14 +40,19 @@ type EnvironmentDraft = {
 const clonePairs = (pairs: KeyValuePair[]) => pairs.map((pair) => ({ ...pair }));
 
 const Index = () => (
-  <ApiClientProvider>
-    <ApiClientApp />
-  </ApiClientProvider>
+  <WorkspaceProvider>
+    <ApiClientProvider>
+      <ApiClientApp />
+    </ApiClientProvider>
+  </WorkspaceProvider>
 );
 
 export default Index;
 
 function ApiClientApp() {
+  const navigate = useNavigate();
+  const [importOpen, setImportOpen] = useState(false);
+  const [comparePair, setComparePair] = useState<{ a: HistoryItem; b: HistoryItem } | null>(null);
   const {
     requests,
     collections,
@@ -415,6 +426,7 @@ function ApiClientApp() {
       onCreateCollection={handleCreateCollection}
       onDeleteCollection={handleDeleteCollection}
       onSelectHistory={handleSelectHistory}
+      onCompareHistory={(a, b) => setComparePair({ a, b })}
     />
   );
 
@@ -457,6 +469,8 @@ function ApiClientApp() {
         />
       </div>
       <div className="ml-auto flex items-center gap-2">
+        <WorkspacePicker />
+        <Button variant="default" size="sm" onClick={() => setImportOpen(true)}>Import</Button>
         {environmentSelector}
         <Button
           variant="ghost"
@@ -519,7 +533,7 @@ function ApiClientApp() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={45} minSize={30}>
-          <div className="h-full">
+          <div className="h-full min-w-0">
             <ResponseViewer response={responsePreview} isLoading={isLoading} />
           </div>
         </ResizablePanel>
@@ -528,34 +542,38 @@ function ApiClientApp() {
   );
 
   return (
-    <div className="flex h-screen bg-background text-foreground">
-      {!isMobile && sidebar}
-      <div className="flex flex-1 flex-col">
-        {isMobile ? (
-          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-            {topBar(
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                  title="Toggle sidebar"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>,
-            )}
-            {mainContent}
-            <SheetContent side="left" className="w-72 p-0">
-              {sidebar}
-            </SheetContent>
-          </Sheet>
-        ) : (
-          <>
-            {topBar()}
-            {mainContent}
-          </>
-        )}
+    <div className="flex h-screen flex-col bg-background text-foreground">
+      <WorkspaceBanner />
+      <div className="flex flex-1 min-h-0">
+        {!isMobile && sidebar}
+        <div className="flex flex-1 flex-col">
+          {isMobile ? (
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              {topBar(
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:hidden"
+                    title="Toggle sidebar"
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>,
+              )}
+              {mainContent}
+              <SheetContent side="left" className="w-72 p-0">
+                {sidebar}
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <>
+              {topBar()}
+              <ImportModal open={importOpen} onOpenChange={setImportOpen} />
+              {mainContent}
+            </>
+          )}
+        </div>
       </div>
 
       <Dialog open={envDialogOpen} onOpenChange={setEnvDialogOpen}>
@@ -648,6 +666,15 @@ function ApiClientApp() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <CompareDialog
+        open={comparePair !== null}
+        onOpenChange={(open) => {
+          if (!open) setComparePair(null);
+        }}
+        left={comparePair?.a ?? null}
+        right={comparePair?.b ?? null}
+      />
 
       <Dialog open={globalsDialogOpen} onOpenChange={setGlobalsDialogOpen}>
         <DialogContent className="max-w-2xl">
